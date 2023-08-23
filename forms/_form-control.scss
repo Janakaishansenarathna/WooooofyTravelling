@@ -1,198 +1,244 @@
 //
-// General form controls (plus a few specific high-level interventions)
+// Material styles for form control - form outline
 //
 
 .form-control {
-  display: block;
-  width: 100%;
-  padding: $input-padding-y $input-padding-x;
-  font-family: $input-font-family;
-  @include font-size($input-font-size);
-  font-weight: $input-font-weight;
-  line-height: $input-line-height;
-  color: $input-color;
-  background-color: $input-bg;
-  background-clip: padding-box;
-  border: $input-border-width solid $input-border-color;
-  appearance: none; // Fix appearance for date inputs in Safari
+  min-height: auto;
+  padding: 4.5px 12px 3.68px 12px;
+  transition: all 0.1s linear;
+  box-shadow: none;
 
-  // Note: This has no effect on <select>s in some browsers, due to the limited stylability of `<select>`s in CSS.
-  @include border-radius($input-border-radius, 0);
-
-  @include box-shadow($input-box-shadow);
-  @include transition($input-transition);
-
-  &[type='file'] {
-    overflow: hidden; // prevent pseudo element button overlap
-
-    &:not(:disabled):not([readonly]) {
-      cursor: pointer;
-    }
-  }
-
-  // Customize the `:focus` state to imitate native WebKit styles.
   &:focus {
-    color: $input-focus-color;
-    background-color: $input-focus-bg;
-    border-color: $input-focus-border-color;
-    outline: 0;
-    @if $enable-shadows {
-      @include box-shadow($input-box-shadow, $input-focus-box-shadow);
-    } @else {
-      // Avoid using mixin so we can pass custom focus shadow properly
-      box-shadow: $input-focus-box-shadow;
+    box-shadow: none;
+    transition: all 0.1s linear;
+    border-color: $primary;
+    box-shadow: inset 0px 0px 0px 1px $primary;
+  }
+  &.form-control-sm {
+    font-size: 0.775rem;
+    line-height: 1.5;
+  }
+  &.form-control-lg {
+    line-height: 2.15;
+    border-radius: 0.25rem;
+  }
+}
+
+.form-outline {
+  position: relative;
+  width: 100%;
+
+  .form-helper {
+    width: 100%;
+    position: absolute;
+    font-size: 0.875em;
+    color: #757575;
+    .form-counter {
+      text-align: right;
     }
   }
 
-  // Add some height to date inputs on iOS
-  // https://github.com/twbs/bootstrap/issues/23307
-  // TODO: we can remove this workaround once https://bugs.webkit.org/show_bug.cgi?id=198959 is resolved
-  &::-webkit-date-and-time-value {
-    // Multiply line-height by 1em if it has no unit
-    height: if(unit($input-line-height) == '', $input-line-height * 1em, $input-line-height);
-  }
-
-  // Placeholder
-  &::placeholder {
-    color: $input-placeholder-color;
-    // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
-    opacity: 1;
-  }
-
-  // Disabled inputs
-  //
-  // HTML5 says that controls under a fieldset > legend:first-child won't be
-  // disabled if the fieldset is disabled. Due to implementation difficulty, we
-  // don't honor that edge case; we style them as disabled anyway.
-  &:disabled {
-    color: $input-disabled-color;
-    background-color: $input-disabled-bg;
-    border-color: $input-disabled-border-color;
-    // iOS fix for unreadable disabled content; see https://github.com/twbs/bootstrap/issues/11655.
-    opacity: 1;
-  }
-
-  // File input buttons theming
-  &::file-selector-button {
-    padding: $input-padding-y $input-padding-x;
-    margin: (-$input-padding-y) (-$input-padding-x);
-    margin-inline-end: $input-padding-x;
-    color: $form-file-button-color;
-    @include gradient-bg($form-file-button-bg);
+  .trailing {
+    position: absolute;
+    right: 10px;
+    left: initial;
+    top: 50%;
+    transform: translateY(-50%);
     pointer-events: none;
-    border-color: inherit;
-    border-style: solid;
-    border-width: 0;
-    border-inline-end-width: $input-border-width;
-    border-radius: 0; // stylelint-disable-line property-disallowed-list
-    @include transition($btn-transition);
   }
 
-  &:hover:not(:disabled):not([readonly])::file-selector-button {
-    background-color: $form-file-button-hover-bg;
-  }
-}
-
-// Readonly controls as plain text
-//
-// Apply class to a readonly input to make it appear like regular plain
-// text (without any border, background color, focus indicator)
-
-.form-control-plaintext {
-  display: block;
-  width: 100%;
-  padding: $input-padding-y 0;
-  margin-bottom: 0; // match inputs if this class comes on inputs with default margins
-  line-height: $input-line-height;
-  color: $input-plaintext-color;
-  background-color: transparent;
-  border: solid transparent;
-  border-width: $input-border-width 0;
-
-  &:focus {
-    outline: 0;
+  .form-icon-trailing {
+    padding-right: 2rem !important;
   }
 
-  &.form-control-sm,
-  &.form-control-lg {
-    padding-right: 0;
-    padding-left: 0;
+  .form-control {
+    min-height: auto;
+    padding-top: $input-padding-top;
+    padding-bottom: $input-padding-bottom;
+    padding-left: $input-padding-left;
+    padding-right: $input-padding-right;
+    border: 0;
+    background: transparent;
+    transition: $input-transition;
+    ~ .form-label {
+      position: absolute;
+      top: 0;
+      max-width: 90%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      left: $form-label-left;
+      padding-top: $form-label-padding-top;
+      pointer-events: none;
+      transform-origin: 0 0;
+      transition: $form-label-transition;
+      color: $form-label-color;
+      margin-bottom: 0;
+    }
+    ~ .form-notch {
+      display: flex;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      text-align: left;
+      pointer-events: none;
+      div {
+        pointer-events: none;
+        border: $border-width solid;
+        border-color: $form-notch-div-border-color;
+        box-sizing: border-box;
+        background: transparent;
+        transition: $input-transition;
+      }
+      .form-notch-leading {
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: $form-notch-leading-width;
+        border-right: none;
+        border-radius: $form-notch-leading-border-radius 0 0 $form-notch-leading-border-radius;
+      }
+      .form-notch-middle {
+        flex: 0 0 auto;
+        width: auto;
+        max-width: calc(100% - #{$form-notch-middle-max-width});
+        height: 100%;
+        border-right: none;
+        border-left: none;
+      }
+      .form-notch-trailing {
+        flex-grow: 1;
+        height: 100%;
+        border-left: none;
+        border-radius: 0 $form-notch-trailing-border-radius $form-notch-trailing-border-radius 0;
+      }
+    }
+    &:not(.placeholder-active)::placeholder {
+      opacity: 0;
+    }
+    &:focus,
+    &.active {
+      &::placeholder {
+        opacity: 1;
+      }
+    }
+    &:focus {
+      box-shadow: none !important;
+    }
+    &:focus ~ .form-label,
+    &.active ~ .form-label {
+      transform: $input-focus-active-label-transform;
+    }
+    &:focus ~ .form-label {
+      color: $input-focus-label-color;
+    }
+    &:focus ~ .form-notch .form-notch-middle,
+    &.active ~ .form-notch .form-notch-middle {
+      border-right: none;
+      border-left: none;
+      border-top: 1px solid transparent;
+    }
+    &:focus ~ .form-notch .form-notch-middle {
+      border-color: $input-focus-border-color;
+      box-shadow: 0 1px 0 0 $input-focus-border-color;
+      border-top: 1px solid transparent;
+    }
+    &:focus ~ .form-notch .form-notch-leading,
+    &.active ~ .form-notch .form-notch-leading {
+      border-right: none;
+    }
+    &:focus ~ .form-notch .form-notch-leading {
+      border-color: $input-focus-border-color;
+      box-shadow: -1px 0 0 0 $input-focus-border-color, 0 1px 0 0 $input-focus-border-color,
+        0 -1px 0 0 $input-focus-border-color;
+    }
+    &:focus ~ .form-notch .form-notch-trailing,
+    &.active ~ .form-notch .form-notch-trailing {
+      border-left: none;
+    }
+    &:focus ~ .form-notch .form-notch-trailing {
+      border-color: $input-focus-border-color;
+      box-shadow: 1px 0 0 0 $input-focus-border-color, 0 -1px 0 0 $input-focus-border-color,
+        0 1px 0 0 $input-focus-border-color;
+    }
+    &:disabled,
+    &.disabled,
+    &[readonly] {
+      background-color: $input-disabled-background-color;
+    }
+    &.form-control-lg {
+      font-size: $input-font-size-lg;
+      line-height: $input-line-height-lg;
+      // padding-left: $input-padding-left-lg;
+      // padding-right: $input-padding-right-lg;
+      ~ .form-label {
+        padding-top: $form-label-padding-top-lg;
+      }
+      &:focus ~ .form-label,
+      &.active ~ .form-label {
+        transform: $input-focus-active-label-transform-lg;
+      }
+    }
+    &.form-control-sm {
+      // padding-left: $input-padding-left-sm;
+      // padding-right: $input-padding-right-sm;
+      padding-top: $input-padding-top-sm;
+      padding-bottom: $input-padding-bottom-sm;
+      font-size: $input-font-size-sm;
+      line-height: $input-line-height-sm;
+      ~ .form-label {
+        padding-top: $form-label-padding-top-sm;
+        font-size: $form-label-font-size-sm;
+      }
+      &:focus ~ .form-label,
+      &.active ~ .form-label {
+        transform: $input-focus-active-label-transform-sm;
+      }
+    }
   }
-}
 
-// Form control sizing
-//
-// Build on `.form-control` with modifier classes to decrease or increase the
-// height and font-size of form controls.
-//
-// Repeated in `_input_group.scss` to avoid Sass extend issues.
-
-.form-control-sm {
-  min-height: $input-height-sm;
-  padding: $input-padding-y-sm $input-padding-x-sm;
-  @include font-size($input-font-size-sm);
-  @include border-radius($input-border-radius-sm);
-
-  &::file-selector-button {
-    padding: $input-padding-y-sm $input-padding-x-sm;
-    margin: (-$input-padding-y-sm) (-$input-padding-x-sm);
-    margin-inline-end: $input-padding-x-sm;
-  }
-}
-
-.form-control-lg {
-  min-height: $input-height-lg;
-  padding: $input-padding-y-lg $input-padding-x-lg;
-  @include font-size($input-font-size-lg);
-  @include border-radius($input-border-radius-lg);
-
-  &::file-selector-button {
-    padding: $input-padding-y-lg $input-padding-x-lg;
-    margin: (-$input-padding-y-lg) (-$input-padding-x-lg);
-    margin-inline-end: $input-padding-x-lg;
-  }
-}
-
-// Make sure textareas don't shrink too much when resized
-// https://github.com/twbs/bootstrap/pull/29124
-// stylelint-disable selector-no-qualifying-type
-textarea {
-  &.form-control {
-    min-height: $input-height;
-  }
-
-  &.form-control-sm {
-    min-height: $input-height-sm;
-  }
-
-  &.form-control-lg {
-    min-height: $input-height-lg;
-  }
-}
-// stylelint-enable selector-no-qualifying-type
-
-.form-control-color {
-  width: $form-color-width;
-  height: $input-height;
-  padding: $input-padding-y;
-
-  &:not(:disabled):not([readonly]) {
-    cursor: pointer;
-  }
-
-  &::-moz-color-swatch {
-    border: 0 !important; // stylelint-disable-line declaration-no-important
-    @include border-radius($input-border-radius);
-  }
-
-  &::-webkit-color-swatch {
-    @include border-radius($input-border-radius);
-  }
-
-  &.form-control-sm {
-    height: $input-height-sm;
-  }
-  &.form-control-lg {
-    height: $input-height-lg;
+  &.form-white {
+    .form-control {
+      color: $form-white-input-color;
+      ~ .form-label {
+        color: $form-white-label-color;
+      }
+      ~ .form-notch {
+        div {
+          border-color: $form-white-notch-div-border-color;
+        }
+      }
+      &:focus ~ .form-label {
+        color: $form-white-input-focus-label-color;
+      }
+      &:focus ~ .form-notch .form-notch-middle {
+        border-color: $form-white-input-focus-border-color;
+        box-shadow: 0 1px 0 0 $form-white-input-focus-border-color;
+        border-top: 1px solid transparent;
+      }
+      &:focus ~ .form-notch .form-notch-leading {
+        border-color: $form-white-input-focus-border-color;
+        box-shadow: -1px 0 0 0 $form-white-input-focus-border-color,
+          0 1px 0 0 $form-white-input-focus-border-color,
+          0 -1px 0 0 $form-white-input-focus-border-color;
+      }
+      &:focus ~ .form-notch .form-notch-trailing {
+        border-color: $form-white-input-focus-border-color;
+        box-shadow: 1px 0 0 0 $form-white-input-focus-border-color,
+          0 -1px 0 0 $form-white-input-focus-border-color,
+          0 1px 0 0 $form-white-input-focus-border-color;
+      }
+      &::placeholder {
+        color: $form-white-placeholder-color;
+      }
+      &:disabled,
+      &.disabled,
+      &[readonly] {
+        background-color: $form-white-disabled-bgc;
+      }
+    }
   }
 }
