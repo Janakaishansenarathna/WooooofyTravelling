@@ -1,36 +1,28 @@
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v5.2.3): dom/manipulator.js
+ * Bootstrap (v5.0.0-beta2): dom/manipulator.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-function normalizeData(value) {
-  if (value === 'true') {
+function normalizeData(val) {
+  if (val === 'true') {
     return true;
   }
 
-  if (value === 'false') {
+  if (val === 'false') {
     return false;
   }
 
-  if (value === Number(value).toString()) {
-    return Number(value);
+  if (val === Number(val).toString()) {
+    return Number(val);
   }
 
-  if (value === '' || value === 'null') {
+  if (val === '' || val === 'null') {
     return null;
   }
 
-  if (typeof value !== 'string') {
-    return value;
-  }
-
-  try {
-    return JSON.parse(decodeURIComponent(value));
-  } catch {
-    return value;
-  }
+  return val;
 }
 
 function normalizeDataKey(key) {
@@ -51,22 +43,75 @@ const Manipulator = {
       return {};
     }
 
-    const attributes = {};
-    const mdbKeys = Object.keys(element.dataset).filter(
-      (key) => key.startsWith('mdb') && !key.startsWith('mdbConfig')
-    );
+    const attributes = {
+      ...element.dataset,
+    };
 
-    for (const key of mdbKeys) {
-      let pureKey = key.replace(/^mdb/, '');
-      pureKey = pureKey.charAt(0).toLowerCase() + pureKey.slice(1, pureKey.length);
-      attributes[pureKey] = normalizeData(element.dataset[key]);
-    }
+    Object.keys(attributes)
+      .filter((key) => key.startsWith('mdb'))
+      .forEach((key) => {
+        let pureKey = key.replace(/^mdb/, '');
+        pureKey = pureKey.charAt(0).toLowerCase() + pureKey.slice(1, pureKey.length);
+        attributes[pureKey] = normalizeData(attributes[key]);
+      });
 
     return attributes;
   },
 
   getDataAttribute(element, key) {
     return normalizeData(element.getAttribute(`data-mdb-${normalizeDataKey(key)}`));
+  },
+
+  offset(element) {
+    const rect = element.getBoundingClientRect();
+
+    return {
+      top: rect.top + document.body.scrollTop,
+      left: rect.left + document.body.scrollLeft,
+    };
+  },
+
+  position(element) {
+    return {
+      top: element.offsetTop,
+      left: element.offsetLeft,
+    };
+  },
+
+  style(element, style) {
+    Object.assign(element.style, style);
+  },
+
+  toggleClass(element, className) {
+    if (!element) {
+      return;
+    }
+
+    if (element.classList.contains(className)) {
+      element.classList.remove(className);
+    } else {
+      element.classList.add(className);
+    }
+  },
+
+  addClass(element, className) {
+    if (element.classList.contains(className)) return;
+    element.classList.add(className);
+  },
+
+  addStyle(element, style) {
+    Object.keys(style).forEach((property) => {
+      element.style[property] = style[property];
+    });
+  },
+
+  removeClass(element, className) {
+    if (!element.classList.contains(className)) return;
+    element.classList.remove(className);
+  },
+
+  hasClass(element, className) {
+    return element.classList.contains(className);
   },
 };
 

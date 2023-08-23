@@ -1,87 +1,83 @@
-/**
- * --------------------------------------------------------------------------
- * Bootstrap (v5.2.3): alert.js
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- * --------------------------------------------------------------------------
- */
-
-import { defineJQueryPlugin } from './util/index';
-import EventHandler from './dom/event-handler';
-import BaseComponent from './base-component';
-import { enableDismissTrigger } from './util/component-functions';
+import { getjQuery, onDOMContentLoaded } from '../mdb/util/index';
+import EventHandler from '../mdb/dom/event-handler';
+import SelectorEngine from '../mdb/dom/selector-engine';
+import BSAlert from '../bootstrap/mdb-prefix/alert';
 
 /**
+ * ------------------------------------------------------------------------
  * Constants
+ * ------------------------------------------------------------------------
  */
 
 const NAME = 'alert';
-const DATA_KEY = 'bs.alert';
-const EVENT_KEY = `.${DATA_KEY}`;
 
-const EVENT_CLOSE = `close${EVENT_KEY}`;
-const EVENT_CLOSED = `closed${EVENT_KEY}`;
-const CLASS_NAME_FADE = 'fade';
-const CLASS_NAME_SHOW = 'show';
+const EVENT_CLOSE_BS = 'close.bs.alert';
+const EVENT_CLOSED_BS = 'closed.bs.alert';
 
-/**
- * Class definition
- */
+const EXTENDED_EVENTS = [{ name: 'close' }, { name: 'closed' }];
 
-class Alert extends BaseComponent {
+const SELECTOR_ALERT = '.alert';
+
+class Alert extends BSAlert {
+  constructor(element, data = {}) {
+    super(element, data);
+
+    this._init();
+  }
+
+  dispose() {
+    EventHandler.off(this._element, EVENT_CLOSE_BS);
+    EventHandler.off(this._element, EVENT_CLOSED_BS);
+
+    super.dispose();
+  }
+
   // Getters
   static get NAME() {
     return NAME;
   }
 
-  // Public
-  close() {
-    const closeEvent = EventHandler.trigger(this._element, EVENT_CLOSE);
-
-    if (closeEvent.defaultPrevented) {
-      return;
-    }
-
-    this._element.classList.remove(CLASS_NAME_SHOW);
-
-    const isAnimated = this._element.classList.contains(CLASS_NAME_FADE);
-    this._queueCallback(() => this._destroyElement(), this._element, isAnimated);
-  }
-
   // Private
-  _destroyElement() {
-    this._element.remove();
-    EventHandler.trigger(this._element, EVENT_CLOSED);
-    this.dispose();
+  _init() {
+    this._bindMdbEvents();
   }
 
-  // Static
-  static jQueryInterface(config) {
-    return this.each(function () {
-      const data = Alert.getOrCreateInstance(this);
-
-      if (typeof config !== 'string') {
-        return;
-      }
-
-      if (data[config] === undefined || config.startsWith('_') || config === 'constructor') {
-        throw new TypeError(`No method named "${config}"`);
-      }
-
-      data[config](this);
-    });
+  _bindMdbEvents() {
+    EventHandler.extend(this._element, EXTENDED_EVENTS, NAME);
   }
 }
 
 /**
- * Data API implementation
+ * ------------------------------------------------------------------------
+ * Data Api implementation - auto initialization
+ * ------------------------------------------------------------------------
  */
 
-enableDismissTrigger(Alert, 'close');
+SelectorEngine.find(SELECTOR_ALERT).forEach((el) => {
+  let instance = Alert.getInstance(el);
+  if (!instance) {
+    instance = new Alert(el);
+  }
+});
 
 /**
+ * ------------------------------------------------------------------------
  * jQuery
+ * ------------------------------------------------------------------------
+ * add .rating to jQuery only if jQuery is present
  */
+onDOMContentLoaded(() => {
+  const $ = getjQuery();
 
-defineJQueryPlugin(Alert);
+  if ($) {
+    const JQUERY_NO_CONFLICT = $.fn[NAME];
+    $.fn[NAME] = Alert.jQueryInterface;
+    $.fn[NAME].Constructor = Alert;
+    $.fn[NAME].noConflict = () => {
+      $.fn[NAME] = JQUERY_NO_CONFLICT;
+      return Alert.jQueryInterface;
+    };
+  }
+});
 
 export default Alert;

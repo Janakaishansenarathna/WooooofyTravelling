@@ -1,98 +1,96 @@
-/**
- * --------------------------------------------------------------------------
- * Bootstrap (v5.2.3): popover.js
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- * --------------------------------------------------------------------------
- */
-
-import { defineJQueryPlugin } from './util/index';
-import Tooltip from './tooltip';
+import { getjQuery, onDOMContentLoaded } from '../mdb/util/index';
+import EventHandler from '../mdb/dom/event-handler';
+import SelectorEngine from '../mdb/dom/selector-engine';
+import BSPopover from '../bootstrap/mdb-prefix/popover';
 
 /**
+ * ------------------------------------------------------------------------
  * Constants
+ * ------------------------------------------------------------------------
  */
 
 const NAME = 'popover';
 
-const SELECTOR_TITLE = '.popover-header';
-const SELECTOR_CONTENT = '.popover-body';
+const EVENT_SHOW_BS = 'show.bs.popover';
+const EVENT_SHOWN_BS = 'shown.bs.popover';
+const EVENT_HIDE_BS = 'hide.bs.popover';
+const EVENT_HIDDEN_BS = 'hidden.bs.popover';
+const EVENT_INSERTED_BS = 'inserted.bs.popover';
 
-const Default = {
-  ...Tooltip.Default,
-  content: '',
-  offset: [0, 8],
-  placement: 'right',
-  template:
-    '<div class="popover" role="tooltip">' +
-    '<div class="popover-arrow"></div>' +
-    '<h3 class="popover-header"></h3>' +
-    '<div class="popover-body"></div>' +
-    '</div>',
-  trigger: 'click',
-};
+const EXTENDED_EVENTS = [
+  { name: 'show' },
+  { name: 'shown' },
+  { name: 'hide' },
+  { name: 'hidden' },
+  { name: 'inserted' },
+];
 
-const DefaultType = {
-  ...Tooltip.DefaultType,
-  content: '(null|string|element|function)',
-};
+const SELECTOR_DATA_TOGGLE = '[data-mdb-toggle="popover"]';
 
-/**
- * Class definition
- */
+class Popover extends BSPopover {
+  constructor(element, data) {
+    super(element, data);
 
-class Popover extends Tooltip {
+    this._init();
+  }
+
+  dispose() {
+    EventHandler.off(this.element, EVENT_SHOW_BS);
+    EventHandler.off(this.element, EVENT_SHOWN_BS);
+    EventHandler.off(this.element, EVENT_HIDE_BS);
+    EventHandler.off(this.element, EVENT_HIDDEN_BS);
+    EventHandler.off(this.element, EVENT_INSERTED_BS);
+
+    super.dispose();
+  }
+
   // Getters
-  static get Default() {
-    return Default;
-  }
-
-  static get DefaultType() {
-    return DefaultType;
-  }
-
   static get NAME() {
     return NAME;
   }
 
-  // Overrides
-  _isWithContent() {
-    return this._getTitle() || this._getContent();
-  }
-
   // Private
-  _getContentForTemplate() {
-    return {
-      [SELECTOR_TITLE]: this._getTitle(),
-      [SELECTOR_CONTENT]: this._getContent(),
-    };
+  _init() {
+    this._bindMdbEvents();
   }
 
-  _getContent() {
-    return this._resolvePossibleFunction(this._config.content);
-  }
-
-  // Static
-  static jQueryInterface(config) {
-    return this.each(function () {
-      const data = Popover.getOrCreateInstance(this, config);
-
-      if (typeof config !== 'string') {
-        return;
-      }
-
-      if (typeof data[config] === 'undefined') {
-        throw new TypeError(`No method named "${config}"`);
-      }
-
-      data[config]();
-    });
+  _bindMdbEvents() {
+    EventHandler.extend(this._element, EXTENDED_EVENTS, NAME);
   }
 }
 
 /**
- * jQuery
+ * ------------------------------------------------------------------------
+ * Data Api implementation - auto initialization
+ * ------------------------------------------------------------------------
  */
 
-defineJQueryPlugin(Popover);
+SelectorEngine.find(SELECTOR_DATA_TOGGLE).forEach((el) => {
+  let instance = Popover.getInstance(el);
+  if (!instance) {
+    instance = new Popover(el);
+  }
+});
+
+/**
+ * ------------------------------------------------------------------------
+ * jQuery
+ * ------------------------------------------------------------------------
+ * add .rating to jQuery only if jQuery is present
+ */
+
+onDOMContentLoaded(() => {
+  const $ = getjQuery();
+
+  if ($) {
+    const JQUERY_NO_CONFLICT = $.fn[NAME];
+    $.fn[NAME] = Popover.jQueryInterface;
+    $.fn[NAME].Constructor = Popover;
+    $.fn[NAME].noConflict = () => {
+      $.fn[NAME] = JQUERY_NO_CONFLICT;
+      return Popover.jQueryInterface;
+    };
+  }
+});
 
 export default Popover;

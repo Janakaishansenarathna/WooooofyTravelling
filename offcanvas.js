@@ -40,7 +40,7 @@ const EVENT_RESIZE = `resize${EVENT_KEY}`;
 const EVENT_CLICK_DATA_API = `click${EVENT_KEY}${DATA_API_KEY}`;
 const EVENT_KEYDOWN_DISMISS = `keydown.dismiss${EVENT_KEY}`;
 
-const SELECTOR_DATA_TOGGLE = '[data-mdb-toggle="offcanvas"]';
+const SELECTOR_DATA_TOGGLE = '[data-bs-toggle="offcanvas"]';
 
 const Default = {
   backdrop: true,
