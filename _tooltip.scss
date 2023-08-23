@@ -57,7 +57,7 @@
   }
 }
 
-/* rtl:begin:ignore */
+/*!rtl:begin:ignore*/
 .bs-tooltip-end .tooltip-arrow {
   left: 0;
   width: var(--#{$prefix}tooltip-arrow-height);
@@ -71,7 +71,7 @@
   }
 }
 
-/* rtl:end:ignore */
+/*!rtl:end:ignore*/
 
 .bs-tooltip-bottom .tooltip-arrow {
   top: 0;
@@ -84,7 +84,7 @@
   }
 }
 
-/* rtl:begin:ignore */
+/*!rtl:begin:ignore*/
 .bs-tooltip-start .tooltip-arrow {
   right: 0;
   width: var(--#{$prefix}tooltip-arrow-height);
@@ -98,7 +98,7 @@
   }
 }
 
-/* rtl:end:ignore */
+/*!rtl:end:ignore*/
 
 .bs-tooltip-auto {
   &[data-popper-placement^='top'] {

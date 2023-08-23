@@ -138,7 +138,7 @@
   background-size: 100% 100%;
 }
 
-/* rtl:options: {
+/*!rtl:options:{
   "autoRename": true,
   "stringMap":[ {
     "name"    : "prev-next",
@@ -156,7 +156,7 @@
 // Optional indicator pips/controls
 //
 // Add a container (such as a list) with the following class and add an item (ideally a focusable control,
-// like a button) with data-bs-target for each slide your carousel holds.
+// like a button) with data-mdb-target for each slide your carousel holds.
 
 .carousel-indicators {
   position: absolute;
@@ -173,7 +173,7 @@
   margin-left: $carousel-control-width;
   list-style: none;
 
-  [data-bs-target] {
+  [data-mdb-target] {
     box-sizing: content-box;
     flex: 0 1 auto;
     width: $carousel-indicator-width;
@@ -221,7 +221,7 @@
     filter: $carousel-dark-control-icon-filter;
   }
 
-  .carousel-indicators [data-bs-target] {
+  .carousel-indicators [data-mdb-target] {
     background-color: $carousel-dark-indicator-active-bg;
   }
 
